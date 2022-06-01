@@ -1,73 +1,65 @@
 package edu.uaslp.objetos.shoppingcart;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.OptionalDouble;
 
 public class ShoppingCart {
-    int totalCost;
-    
-    public void isEmpty
+    private List<Item> items = new ArrayList<>();
+    private int cont;
 
-    public boolean isEmpty() {
-    }
+    public BigDecimal getTotalCost() {
+        if(isEmpty()){
+            throw new EmptyShoppingCartException();
+        }
+        BigDecimal totalCost = BigDecimal.ZERO;
 
-    public int getTotalCost() {
+        for(Item item: items){
+            totalCost = totalCost.add(item.getUnitCost().multiply(BigDecimal.valueOf(item.getQuantity())));
+        }
         return totalCost;
     }
 
     public void addItem(Item item) {
+        for(Item itemAd: items){
+            if(itemAd.getCode() == item.getCode() && itemAd.getUnitCost().compareTo(item.getUnitCost())==0){
+                itemAd.setQuantity(itemAd.getQuantity()+item.getQuantity());
+                return;
+            }
+        }
+        items.add(item);
     }
 
-    public boolean getItemsCount() {
+    public boolean isEmpty() {
+        if(items.size()==0){
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public int getItemsCount() {
+
+        for(int i=0; i<items.size(); i++){
+            cont= cont + items.get(i).getQuantity();
+        }
+        return cont;
     }
 
     public List<Item> getItems() {
+        return items;
     }
 
-    public void removeItem(String itemCode2) {
-    }
-}
-
-class Item {
-    String code;
-    BigDecimal unitCost;
-    int quantity;
-    String providerCode;
-
-    public Item(String itemCode1, String providerCode1, BigDecimal bigDecimal, int i) {
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setProviderCode(String providerCode) {
-        this.providerCode = providerCode;
-    }
-
-    public String getProviderCode() {
-        return providerCode;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setUnitCost(BigDecimal unitCost) {
-        this.unitCost = unitCost;
-    }
-
-    public BigDecimal getUnitCost() {
-        return unitCost;
+    public void removeItem(String itemCode) {
+        for(Item itemremove: items){
+            if(itemremove.getCode()==itemCode){
+                itemremove.setQuantity(itemremove.getQuantity()-1);
+                if(itemremove.getQuantity()==0)
+                    items.remove(itemremove);
+                return;
+            }
+        }
     }
 }
-
